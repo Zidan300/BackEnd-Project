@@ -17,16 +17,19 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:4000/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
+            const response = await fetch(
+                "http://localhost:4000/api/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                }
+            );
 
             const data = await response.json();
 
@@ -36,13 +39,16 @@ function Login() {
                 return;
             }
 
+            // Save JWT
             localStorage.setItem("token", data.token);
 
+            // Save user information
             localStorage.setItem(
                 "user",
                 JSON.stringify(data.user)
             );
 
+            // Go to dashboard
             navigate("/dashboard");
 
         } catch (error) {
@@ -55,105 +61,141 @@ function Login() {
     return (
         <div className="login-page">
 
-            <div className="background-glow glow-one"></div>
-            <div className="background-glow glow-two"></div>
+            {/* Background */}
+            <div className="login-background" />
 
+            {/* Dark overlay */}
+            <div className="login-overlay" />
+
+            {/* Login Card */}
             <div className="login-card">
 
-                <div className="login-header">
+                {/* Left side */}
+                <div className="login-intro">
 
                     <div className="logo">
                         L
                     </div>
 
-                    <h1>Welcome back</h1>
+                    <h1>
+                        Welcome back.
+                    </h1>
 
                     <p>
-                        Sign in to continue to your account
+                        Sign in to continue to your account.
                     </p>
 
                 </div>
 
-                <form onSubmit={handleLogin}>
+                {/* Right side */}
+                <div className="login-form-section">
 
-                    <div className="input-group">
+                    <form onSubmit={handleLogin}>
 
-                        <label htmlFor="email">
-                            Email address
-                        </label>
+                        {/* Email */}
+                        <div className="input-group">
 
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-
-                    </div>
-
-                    <div className="input-group">
-
-                        <div className="password-label">
-
-                            <label htmlFor="password">
-                                Password
+                            <label htmlFor="email">
+                                Email
                             </label>
 
-                            <button
-                                type="button"
-                                className="show-password"
-                                onClick={() =>
-                                    setShowPassword(!showPassword)
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
                                 }
-                            >
-                                {showPassword ? "Hide" : "Show"}
-                            </button>
+                                required
+                            />
 
                         </div>
 
-                        <input
-                            id="password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        {/* Password */}
+                        <div className="input-group">
+
+                            <div className="password-header">
+
+                                <label htmlFor="password">
+                                    Password
+                                </label>
+
+                                <button
+                                    type="button"
+                                    className="show-password"
+                                    onClick={() =>
+                                        setShowPassword(
+                                            !showPassword
+                                        )
+                                    }
+                                >
+                                    {showPassword
+                                        ? "Hide"
+                                        : "Show"}
+                                </button>
+
+                            </div>
+
+                            <input
+                                id="password"
+                                type={
+                                    showPassword
+                                        ? "text"
+                                        : "password"
+                                }
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) =>
+                                    setPassword(
+                                        e.target.value
+                                    )
+                                }
+                                required
+                            />
+
+                        </div>
+
+                        {/* Error */}
+                        {message && (
+                            <div className="login-message">
+                                {message}
+                            </div>
+                        )}
+
+                        {/* Login */}
+                        <button
+                            type="submit"
+                            className="login-button"
+                            disabled={loading}
+                        >
+                            {loading
+                                ? "Signing in..."
+                                : "Sign in"}
+                        </button>
+
+                    </form>
+
+                    {/* Register */}
+                    <div className="register-area">
+
+                        <span>
+                            Don't have an account?
+                        </span>
+
+                        <button
+                            type="button"
+                            className="register-link"
+                            onClick={() =>
+                                navigate("/register")
+                            }
+                        >
+                            Create one
+                        </button>
 
                     </div>
 
-                    {message && (
-                        <div className="login-message">
-                            {message}
-                        </div>
-                    )}
-
-                    <button
-                        className="login-button"
-                        type="submit"
-                        disabled={loading}
-                    >
-                        {loading ? "Signing in..." : "Sign in"}
-                    </button>
-
-                </form>
-
-                <div className="divider">
-                    <span>New here?</span>
                 </div>
-
-                <button
-                    className="register-button"
-                    onClick={() => navigate("/register")}
-                >
-                    Create an account
-                </button>
-
-                <p className="security-note">
-                    Your connection is secured with encrypted authentication.
-                </p>
 
             </div>
 
