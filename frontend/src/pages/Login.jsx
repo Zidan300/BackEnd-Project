@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+    Mail,
+    Lock,
+    Eye,
+    EyeOff,
+    LogIn,
+    ArrowRight,
+} from "lucide-react";
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
@@ -34,7 +42,7 @@ function Login() {
             const data = await response.json();
 
             if (!response.ok) {
-                setMessage(data.message || "Login failed");
+                setMessage(data.message || "Invalid email or password");
                 setLoading(false);
                 return;
             }
@@ -42,7 +50,7 @@ function Login() {
             // Save JWT
             localStorage.setItem("token", data.token);
 
-            // Save user information
+            // Save user
             localStorage.setItem(
                 "user",
                 JSON.stringify(data.user)
@@ -52,8 +60,8 @@ function Login() {
             navigate("/dashboard");
 
         } catch (error) {
-            console.error(error);
-            setMessage("Unable to connect to server.");
+            console.error("Login error:", error);
+            setMessage("Unable to connect to the server.");
             setLoading(false);
         }
     };
@@ -61,143 +69,200 @@ function Login() {
     return (
         <div className="login-page">
 
-            {/* Background */}
-            <div className="login-background" />
+            {/* Background image */}
+            <div className="login-background"></div>
 
-            {/* Dark overlay */}
-            <div className="login-overlay" />
+            {/* Soft overlay */}
+            <div className="login-overlay"></div>
 
             {/* Login Card */}
-            <div className="login-card">
+            <main className="login-card">
 
-                {/* Left side */}
-                <div className="login-intro">
+                {/* Login Icon */}
+                <div className="login-icon">
+                    <LogIn size={22} strokeWidth={2} />
+                </div>
 
-                    <div className="logo">
-                        L
-                    </div>
+                {/* Header */}
+                <div className="login-header">
 
-                    <h1>
-                        Welcome back.
-                    </h1>
+                    <h1>Sign in with email</h1>
 
                     <p>
-                        Sign in to continue to your account.
+                        Make a new doc to bring your words,
+                        data, and teams together. For free.
                     </p>
 
                 </div>
 
-                {/* Right side */}
-                <div className="login-form-section">
+                {/* Form */}
+                <form
+                    className="login-form"
+                    onSubmit={handleLogin}
+                >
 
-                    <form onSubmit={handleLogin}>
+                    {/* Email */}
+                    <div className="input-wrapper">
 
-                        {/* Email */}
-                        <div className="input-group">
+                        <Mail
+                            className="input-icon"
+                            size={19}
+                        />
 
-                            <label htmlFor="email">
-                                Email
-                            </label>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) =>
+                                setEmail(e.target.value)
+                            }
+                            required
+                        />
 
-                            <input
-                                id="email"
-                                type="email"
-                                placeholder="you@example.com"
-                                value={email}
-                                onChange={(e) =>
-                                    setEmail(e.target.value)
-                                }
-                                required
-                            />
+                    </div>
 
-                        </div>
+                    {/* Password */}
+                    <div className="input-wrapper">
 
-                        {/* Password */}
-                        <div className="input-group">
+                        <Lock
+                            className="input-icon"
+                            size={19}
+                        />
 
-                            <div className="password-header">
-
-                                <label htmlFor="password">
-                                    Password
-                                </label>
-
-                                <button
-                                    type="button"
-                                    className="show-password"
-                                    onClick={() =>
-                                        setShowPassword(
-                                            !showPassword
-                                        )
-                                    }
-                                >
-                                    {showPassword
-                                        ? "Hide"
-                                        : "Show"}
-                                </button>
-
-                            </div>
-
-                            <input
-                                id="password"
-                                type={
-                                    showPassword
-                                        ? "text"
-                                        : "password"
-                                }
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) =>
-                                    setPassword(
-                                        e.target.value
-                                    )
-                                }
-                                required
-                            />
-
-                        </div>
-
-                        {/* Error */}
-                        {message && (
-                            <div className="login-message">
-                                {message}
-                            </div>
-                        )}
-
-                        {/* Login */}
-                        <button
-                            type="submit"
-                            className="login-button"
-                            disabled={loading}
-                        >
-                            {loading
-                                ? "Signing in..."
-                                : "Sign in"}
-                        </button>
-
-                    </form>
-
-                    {/* Register */}
-                    <div className="register-area">
-
-                        <span>
-                            Don't have an account?
-                        </span>
+                        <input
+                            type={
+                                showPassword
+                                    ? "text"
+                                    : "password"
+                            }
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) =>
+                                setPassword(e.target.value)
+                            }
+                            required
+                        />
 
                         <button
                             type="button"
-                            className="register-link"
+                            className="password-toggle"
                             onClick={() =>
-                                navigate("/register")
+                                setShowPassword(
+                                    !showPassword
+                                )
+                            }
+                            aria-label={
+                                showPassword
+                                    ? "Hide password"
+                                    : "Show password"
                             }
                         >
-                            Create one
+                            {showPassword ? (
+                                <EyeOff size={19} />
+                            ) : (
+                                <Eye size={19} />
+                            )}
                         </button>
 
                     </div>
 
+                    {/* Forgot password */}
+                    <div className="forgot-password">
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setMessage(
+                                    "Password reset is not available yet."
+                                );
+                            }}
+                        >
+                            Forgot password?
+                        </button>
+
+                    </div>
+
+                    {/* Error message */}
+                    {message && (
+                        <div className="login-message">
+                            {message}
+                        </div>
+                    )}
+
+                    {/* Login button */}
+                    <button
+                        type="submit"
+                        className="login-button"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            "Signing in..."
+                        ) : (
+                            <>
+                                Sign In
+                                <ArrowRight size={18} />
+                            </>
+                        )}
+                    </button>
+
+                </form>
+
+                {/* Divider */}
+                <div className="divider">
+                    <span>Or sign in with</span>
                 </div>
 
-            </div>
+                {/* Social login */}
+                <div className="social-login">
+
+                  <button
+                      type="button"
+                      className="social-button"
+                      onClick={() => {
+                          window.location.href =
+                              "http://localhost:4000/auth/google";
+                      }}
+                  >
+                      G
+                  </button>
+
+                    <button
+                        type="button"
+                        className="social-button facebook"
+                        title="Facebook"
+                    >
+                        <span>f</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="social-button apple"
+                        title="Apple"
+                    >
+                        <span>●</span>
+                    </button>
+
+                </div>
+
+                {/* Register */}
+                <div className="register-section">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/register")
+                        }
+                    >
+                        Create one
+                    </button>
+
+                </div>
+
+            </main>
 
         </div>
     );
