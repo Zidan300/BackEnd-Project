@@ -1,71 +1,108 @@
 import { useMemo, useState } from "react";
 
-function HumanizerEditor() {
+function HumanizerEditor({
+    onHumanize,
+    isProcessing,
+}) {
+
     const [text, setText] = useState("");
-    const [style, setStyle] = useState("Natural");
-    const [isProcessing, setIsProcessing] = useState(false);
+
+    const [style, setStyle] =
+        useState("Natural");
+
 
     const maxCharacters = 5000;
 
+
+    // =========================================
+    // WORD COUNT
+    // =========================================
+
     const words = useMemo(() => {
-        if (!text.trim()) return 0;
+
+        if (!text.trim()) {
+            return 0;
+        }
 
         return text
             .trim()
             .split(/\s+/)
             .filter(Boolean)
             .length;
+
     }, [text]);
 
-    const characters = text.length;
 
-    const handleHumanize = async () => {
-        if (!text.trim() || isProcessing) return;
+    const characters =
+        text.length;
 
-        setIsProcessing(true);
 
-        /*
-         * AI humanizer API will be connected here.
-         *
-         * Example later:
-         *
-         * const response = await fetch(
-         *     "http://localhost:4000/api/humanize",
-         *     {
-         *         method: "POST",
-         *         headers: {
-         *             "Content-Type": "application/json",
-         *         },
-         *         body: JSON.stringify({
-         *             text,
-         *             style,
-         *         }),
-         *     }
-         * );
-         */
+    // =========================================
+    // HUMANIZE
+    // =========================================
 
-        setTimeout(() => {
-            setIsProcessing(false);
-        }, 800);
-    };
+    const handleHumanize = () => {
 
-    const handleTextChange = (event) => {
-        const value = event.target.value;
-
-        if (value.length <= maxCharacters) {
-            setText(value);
+        if (
+            !text.trim() ||
+            isProcessing
+        ) {
+            return;
         }
+
+
+        onHumanize(
+            text,
+            style
+        );
     };
+
+
+    // =========================================
+    // TEXT CHANGE
+    // =========================================
+
+    const handleTextChange = (
+        event
+    ) => {
+
+        const value =
+            event.target.value;
+
+
+        if (
+            value.length <=
+            maxCharacters
+        ) {
+
+            setText(value);
+
+        }
+
+    };
+
+
+    // =========================================
+    // STYLES
+    // =========================================
 
     const styles = [
+
         "Natural",
+
         "Balanced",
+
         "Academic",
+
         "Casual",
+
     ];
 
+
     return (
+
         <section className="humanizer-editor">
+
 
             {/* =========================================
                 PANEL HEADER
@@ -85,6 +122,7 @@ function HumanizerEditor() {
 
                 </div>
 
+
                 <span className="panel-status">
                     INPUT
                 </span>
@@ -97,6 +135,7 @@ function HumanizerEditor() {
             ========================================= */}
 
             <div className="editor-body">
+
 
                 <div className="editor-heading">
 
@@ -120,12 +159,17 @@ function HumanizerEditor() {
                     <textarea
                         className="editor-textarea"
                         value={text}
-                        onChange={handleTextChange}
+                        onChange={
+                            handleTextChange
+                        }
                         placeholder="Paste your AI-generated text here..."
                         spellCheck="true"
-                        maxLength={maxCharacters}
+                        maxLength={
+                            maxCharacters
+                        }
                         aria-label="Text to humanize"
                     />
+
 
                     <div className="paper-corner">
                         +
@@ -151,10 +195,13 @@ function HumanizerEditor() {
                         </span>
 
                         <span>
-                            {characters} CHARACTERS
+                            {characters}
+                            {" "}
+                            CHARACTERS
                         </span>
 
                     </div>
+
 
                     <span className="character-limit">
                         MAX {maxCharacters}
@@ -170,6 +217,7 @@ function HumanizerEditor() {
                 <div className="style-section">
 
                     <div className="style-heading">
+
                         <span>
                             WRITING STYLE
                         </span>
@@ -177,26 +225,39 @@ function HumanizerEditor() {
                         <span>
                             {style.toUpperCase()}
                         </span>
+
                     </div>
+
 
                     <div className="style-options">
 
-                        {styles.map((item) => (
-                            <button
-                                key={item}
-                                type="button"
-                                className={`style-pill ${
-                                    style === item
-                                        ? "active"
-                                        : ""
-                                }`}
-                                onClick={() =>
-                                    setStyle(item)
-                                }
-                            >
-                                {item}
-                            </button>
-                        ))}
+                        {styles.map(
+                            (item) => (
+
+                                <button
+                                    key={item}
+                                    type="button"
+                                    className={
+                                        `style-pill ${
+                                            style === item
+                                                ? "active"
+                                                : ""
+                                        }`
+                                    }
+                                    onClick={() =>
+                                        setStyle(
+                                            item
+                                        )
+                                    }
+                                    disabled={
+                                        isProcessing
+                                    }
+                                >
+                                    {item}
+                                </button>
+
+                            )
+                        )}
 
                     </div>
 
@@ -209,18 +270,27 @@ function HumanizerEditor() {
 
                 <div className="editor-action">
 
+
                     <div className="engine-status">
 
                         <span className="engine-dot"></span>
 
+
                         <div>
+
                             <span className="engine-label">
-                                ENGINE READY
+
+                                {isProcessing
+                                    ? "ENGINE WORKING"
+                                    : "ENGINE READY"}
+
                             </span>
+
 
                             <span className="engine-model">
                                 LLAMA 3.2 · 3B
                             </span>
+
                         </div>
 
                     </div>
@@ -229,12 +299,15 @@ function HumanizerEditor() {
                     <button
                         type="button"
                         className="humanize-button"
-                        onClick={handleHumanize}
+                        onClick={
+                            handleHumanize
+                        }
                         disabled={
                             !text.trim() ||
                             isProcessing
                         }
                     >
+
                         {isProcessing
                             ? "PROCESSING..."
                             : "HUMANIZE"}
@@ -242,13 +315,17 @@ function HumanizerEditor() {
                         <span>
                             →
                         </span>
+
                     </button>
 
+
                 </div>
+
 
             </div>
 
         </section>
+
     );
 }
 

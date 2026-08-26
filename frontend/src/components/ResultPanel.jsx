@@ -1,18 +1,30 @@
 import { useState } from "react";
 
-function ResultPanel() {
-    const [result, setResult] = useState("");
-    const [copied, setCopied] = useState(false);
+function ResultPanel({
+    result,
+    error,
+}) {
 
-    const words = result.trim()
-        ? result
-              .trim()
-              .split(/\s+/)
-              .filter(Boolean)
-              .length
-        : 0;
+    const [copied, setCopied] =
+        useState(false);
 
-    const characters = result.length;
+
+    // =========================================
+    // WORD COUNT
+    // =========================================
+
+    const words =
+        result?.trim()
+            ? result
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean)
+                .length
+            : 0;
+
+
+    const characters =
+        result?.length || 0;
 
 
     // =========================================
@@ -20,23 +32,37 @@ function ResultPanel() {
     // =========================================
 
     const handleCopy = async () => {
-        if (!result) return;
+
+        if (!result) {
+            return;
+        }
+
 
         try {
-            await navigator.clipboard.writeText(result);
+
+            await navigator.clipboard
+                .writeText(result);
+
 
             setCopied(true);
 
+
             setTimeout(() => {
+
                 setCopied(false);
+
             }, 1800);
 
+
         } catch (error) {
+
             console.error(
                 "Unable to copy text:",
                 error
             );
+
         }
+
     };
 
 
@@ -45,38 +71,63 @@ function ResultPanel() {
     // =========================================
 
     const handleDownload = () => {
-        if (!result) return;
 
-        const blob = new Blob(
-            [result],
-            {
-                type: "text/plain",
-            }
-        );
+        if (!result) {
+            return;
+        }
+
+
+        const blob =
+            new Blob(
+                [result],
+                {
+                    type: "text/plain",
+                }
+            );
+
 
         const url =
-            URL.createObjectURL(blob);
+            URL.createObjectURL(
+                blob
+            );
+
 
         const link =
-            document.createElement("a");
+            document.createElement(
+                "a"
+            );
+
 
         link.href = url;
 
         link.download =
             "humanized-text.txt";
 
-        document.body.appendChild(link);
+
+        document.body.appendChild(
+            link
+        );
+
 
         link.click();
 
-        document.body.removeChild(link);
 
-        URL.revokeObjectURL(url);
+        document.body.removeChild(
+            link
+        );
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
     };
 
 
     return (
+
         <section className="result-panel">
+
 
             {/* =========================================
                 PANEL HEADER
@@ -96,6 +147,7 @@ function ResultPanel() {
 
                 </div>
 
+
                 <span className="panel-status">
                     OUTPUT
                 </span>
@@ -108,6 +160,7 @@ function ResultPanel() {
             ========================================= */}
 
             <div className="result-body">
+
 
                 <div className="result-heading">
 
@@ -128,7 +181,26 @@ function ResultPanel() {
 
                 <div className="result-content">
 
-                    {result ? (
+
+                    {error ? (
+
+                        <div className="result-error">
+
+                            <div className="result-empty-mark">
+                                !
+                            </div>
+
+                            <h3>
+                                HUMANIZATION FAILED
+                            </h3>
+
+                            <p>
+                                {error}
+                            </p>
+
+                        </div>
+
+                    ) : result ? (
 
                         <div className="result-text">
                             {result}
@@ -142,14 +214,17 @@ function ResultPanel() {
                                 +
                             </div>
 
+
                             <h3>
                                 NO RESULT YET
                             </h3>
+
 
                             <p>
                                 Your humanized text
                                 will appear here.
                             </p>
+
 
                             <span className="result-hint">
                                 PASTE TEXT →
@@ -176,15 +251,20 @@ function ResultPanel() {
                             {words} WORDS
                         </span>
 
+
                         <span className="meta-divider">
                             |
                         </span>
 
+
                         <span>
-                            {characters} CHARACTERS
+                            {characters}
+                            {" "}
+                            CHARACTERS
                         </span>
 
                     </div>
+
 
                     <span className="result-format-small">
                         UTF-8
@@ -199,13 +279,18 @@ function ResultPanel() {
 
                 <div className="result-footer">
 
+
                     <div className="result-actions">
 
                         <button
                             type="button"
                             className="result-button"
-                            onClick={handleCopy}
-                            disabled={!result}
+                            onClick={
+                                handleCopy
+                            }
+                            disabled={
+                                !result
+                            }
                         >
                             {copied
                                 ? "COPIED"
@@ -216,8 +301,12 @@ function ResultPanel() {
                         <button
                             type="button"
                             className="result-button"
-                            onClick={handleDownload}
-                            disabled={!result}
+                            onClick={
+                                handleDownload
+                            }
+                            disabled={
+                                !result
+                            }
                         >
                             DOWNLOAD
                         </button>
@@ -233,11 +322,17 @@ function ResultPanel() {
 
                         <span className="system-dot"></span>
 
+
                         <span>
-                            {result
-                                ? "OUTPUT READY"
-                                : "WAITING FOR INPUT"}
+
+                            {error
+                                ? "ERROR"
+                                : result
+                                    ? "OUTPUT READY"
+                                    : "WAITING FOR INPUT"}
+
                         </span>
+
 
                         <span className="system-code">
                             OUTPUT_02
@@ -245,12 +340,15 @@ function ResultPanel() {
 
                     </div>
 
+
                 </div>
 
             </div>
 
         </section>
+
     );
+
 }
 
 export default ResultPanel;

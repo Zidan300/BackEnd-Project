@@ -4,7 +4,10 @@ function Sidebar({ user, onLogout }) {
     return (
         <aside className="sidebar">
 
-            {/* Brand */}
+            {/* =========================================
+                BRAND
+            ========================================= */}
+
             <div className="sidebar-brand">
 
                 <div className="brand-mark">
@@ -12,6 +15,7 @@ function Sidebar({ user, onLogout }) {
                 </div>
 
                 <div className="brand-text">
+
                     <span className="brand-name">
                         HUMANIZE
                     </span>
@@ -19,27 +23,40 @@ function Sidebar({ user, onLogout }) {
                     <span className="brand-version">
                         v1.0 / AI TEXT LAB
                     </span>
+
                 </div>
 
             </div>
 
 
-            {/* Workspace indicator */}
+            {/* =========================================
+                WORKSPACE LABEL
+            ========================================= */}
+
             <div className="workspace-label">
+
                 <span className="status-dot"></span>
 
-                <span>
+                <span className="workspace-title">
                     WORKSPACE
                 </span>
 
                 <span className="workspace-line"></span>
+
             </div>
 
 
-            {/* Navigation */}
+            {/* =========================================
+                MAIN NAVIGATION
+            ========================================= */}
+
             <nav className="sidebar-nav">
 
-                <button className="nav-item active">
+                <button
+                    type="button"
+                    className="nav-item active"
+                >
+
                     <span className="nav-icon">
                         ✦
                     </span>
@@ -51,10 +68,15 @@ function Sidebar({ user, onLogout }) {
                     <span className="nav-arrow">
                         ↗
                     </span>
+
                 </button>
 
 
-                <button className="nav-item">
+                <button
+                    type="button"
+                    className="nav-item"
+                >
+
                     <span className="nav-icon">
                         ◷
                     </span>
@@ -62,10 +84,15 @@ function Sidebar({ user, onLogout }) {
                     <span className="nav-label">
                         History
                     </span>
+
                 </button>
 
 
-                <button className="nav-item">
+                <button
+                    type="button"
+                    className="nav-item"
+                >
+
                     <span className="nav-icon">
                         □
                     </span>
@@ -73,26 +100,47 @@ function Sidebar({ user, onLogout }) {
                     <span className="nav-label">
                         Saved
                     </span>
+
                 </button>
 
             </nav>
 
 
-            {/* Lower navigation */}
-            <div className="sidebar-bottom">
+            {/* =========================================
+                FLEXIBLE SPACE
+                ========================================= */}
 
-                <div className="workspace-label">
-                    <span>
+            <div className="sidebar-spacer"></div>
+
+
+            {/* =========================================
+                SYSTEM / FOOTER
+                ========================================= */}
+
+            <div className="sidebar-footer">
+
+                {/* System label */}
+
+                <div className="workspace-label system-label">
+
+                    <span className="workspace-title">
                         SYSTEM
                     </span>
 
                     <span className="workspace-line"></span>
+
                 </div>
 
 
-                <nav className="sidebar-nav">
+                {/* Settings */}
 
-                    <button className="nav-item">
+                <nav className="sidebar-nav sidebar-system-nav">
+
+                    <button
+                        type="button"
+                        className="nav-item"
+                    >
+
                         <span className="nav-icon">
                             ⚙
                         </span>
@@ -100,20 +148,24 @@ function Sidebar({ user, onLogout }) {
                         <span className="nav-label">
                             Settings
                         </span>
+
                     </button>
 
                 </nav>
 
-            </div>
 
+                {/* =====================================
+                    ACCOUNT
+                    ===================================== */}
 
-            {/* User */}
-            <div className="sidebar-user">
+                <div className="sidebar-user">
 
-                <UserMenu
-                    user={user}
-                    onLogout={onLogout}
-                />
+                    <UserMenu
+                        user={user}
+                        onLogout={onLogout}
+                    />
+
+                </div>
 
             </div>
 

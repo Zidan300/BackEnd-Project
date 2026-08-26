@@ -1,53 +1,43 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-function UserMenu() {
-    const navigate = useNavigate();
-
+function UserMenu({ user, onLogout }) {
     const [open, setOpen] = useState(false);
 
-    const storedUser = localStorage.getItem("user");
+    const email = user?.email || "user@example.com";
 
-    let user = null;
+    // Get a clean username from the email
+    const username =
+        user?.username ||
+        email.split("@")[0] ||
+        "User";
 
-    try {
-        user = storedUser ? JSON.parse(storedUser) : null;
-    } catch (error) {
-        console.error("Failed to read user:", error);
-    }
-
-    const email = user?.email || "User";
-
-    // Create initials from email
-    const initials = email
-        .split("@")[0]
+    // Avatar initials
+    const initials = username
         .slice(0, 2)
         .toUpperCase();
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-
-        navigate("/login");
-    };
 
     return (
         <div className="user-menu">
 
-            {/* User Button */}
+            {/* Profile button */}
             <button
-                className="user-menu-button"
+                type="button"
+                className={`user-trigger ${open ? "is-open" : ""}`}
                 onClick={() => setOpen(!open)}
+                aria-expanded={open}
             >
 
+                {/* Avatar */}
                 <div className="user-avatar">
                     {initials}
                 </div>
 
+
+                {/* User information */}
                 <div className="user-info">
 
                     <span className="user-name">
-                        {email.split("@")[0]}
+                        {username}
                     </span>
 
                     <span className="user-email">
@@ -56,8 +46,14 @@ function UserMenu() {
 
                 </div>
 
-                <span className="user-arrow">
-                    {open ? "↑" : "↓"}
+
+                {/* Arrow */}
+                <span
+                    className={`user-chevron ${
+                        open ? "rotate" : ""
+                    }`}
+                >
+                    ↓
                 </span>
 
             </button>
@@ -67,53 +63,34 @@ function UserMenu() {
             {open && (
                 <div className="user-dropdown">
 
-                    <div className="dropdown-header">
+                    <div className="user-dropdown-header">
 
                         <span className="dropdown-label">
                             ACCOUNT
                         </span>
 
-                        <strong>
+                        <span className="dropdown-user">
                             {email}
-                        </strong>
+                        </span>
 
                     </div>
 
 
-                    <div className="dropdown-divider"></div>
-
-
                     <button
-                        className="dropdown-item"
-                        onClick={() => {
-                            setOpen(false);
-                        }}
+                        type="button"
+                        className="dropdown-action"
+                        onClick={() => setOpen(false)}
                     >
-                        <span>⚙</span>
-                        Settings
+                        Profile
                     </button>
 
 
                     <button
-                        className="dropdown-item"
-                        onClick={() => {
-                            setOpen(false);
-                        }}
+                        type="button"
+                        className="dropdown-action logout"
+                        onClick={onLogout}
                     >
-                        <span>?</span>
-                        Help
-                    </button>
-
-
-                    <div className="dropdown-divider"></div>
-
-
-                    <button
-                        className="dropdown-logout"
-                        onClick={handleLogout}
-                    >
-                        <span>↪</span>
-                        Logout
+                        Sign out
                     </button>
 
                 </div>
