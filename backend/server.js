@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const { humanizeText } = require("./humanizer/humanizerEngine");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const express = require("express");
@@ -643,6 +643,66 @@ app.get(
 
     }
 );
+// ==========================================
+// HUMANIZER
+// ==========================================
+
+app.post("/api/humanize", async (req, res) => {
+
+    try {
+
+        const { text, mode } = req.body;
+
+        if (!text || !text.trim()) {
+
+            return res.status(400).json({
+                message: "Text is required."
+            });
+
+        }
+
+
+        const humanizedText = await humanizeText(
+            text,
+            mode || "natural"
+        );
+
+
+        res.json({
+
+            success: true,
+
+            original: text,
+
+            humanized: humanizedText,
+
+            mode: mode || "natural"
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Humanizer error:",
+            error
+        );
+
+
+        res.status(500).json({
+
+            success: false,
+
+            message:
+                "Unable to humanize text.",
+
+            error:
+                error.message
+
+        });
+
+    }
+
+});
 
 
 // =====================================================
